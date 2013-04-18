@@ -1,5 +1,69 @@
 #jsi-live-test {
-	margin-top: 20px;
-	padding: 20px;
-	background: #333;
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	height: 300px;
+	background: #1B1D1E;
+	margin: 0;
+	padding: 1px !important;
+	color: #FFFFFF;
+	font-family: Helvetica, Arial, Verdana, "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
+	font-size: 12px;
+	box-shadow: 0 0 20px rgba(0,0,0,.3);
+}
+#jsi-live-test,
+#jsi-live-test div,
+#jsi-live-test p,
+#jsi-live-test td {
+	margin: 0;
+	padding: 0;
+}
+#jsi-live-test a {
+	text-decoration: none;
+}
+
+#jsi-live-test-tab {
+	background: #F8F8F2;
+	padding: 0;
+}
+#jsi-live-test-tab table {
+	border-collapse: collapse;
+}
+#jsi-live-test-tab td a {
+	display: block;
+	height: 100%;
+	padding: 1px 10px;
+	color: #FFFFFF;
+	background: #A9A9A9;
+	text-decoration: underline;
+}
+#jsi-live-test-tab td a.jsc-current {
+	background: #1B1D1E;
+	text-decoration: none;
+}
+.jsc-live-test-inner {
+	display: none;
+	height: 265px;
+	padding: 10px !important;
+	margin-top: 1px !important;
+	overflow: auto;
+}
+.jsc-live-test-inner {
+	display: block;
+}
+.jsc-live-test-section {
+	margin-bottom: 10px !important;
+}
+.jsc-live-test-title {
+	color: #FB9632;
+}
+#jsi-live-test .jsc-live-test-value {
+	padding-left: 20px;
+}
+.jsc-live-test-value-true {
+	color: #8ADC40;
+}
+.jsc-live-test-value-false {
+	color: #F62C5E;
 }
