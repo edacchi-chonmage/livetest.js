@@ -56,6 +56,7 @@
 }
 .jsc-live-test-inner table th {
 	width: 25px;
+	min-width: 25px;
 	background: #232526;
 	color: #425558;
 	text-align: center;
@@ -89,20 +90,57 @@
 #jsi-lt-status {
 	width: 100%;
 	background: #303030;
-}
-#jsi-lt-status-name {
-	position: relative;
-	padding: 0 7px !important;;
-	background: #FFFFFF;
-	color: #0A5F5F;
+	text-align: center;
+	border-collapse: collapse;
 	font-size: 11px;
 	font-weight: bold;
 }
-#jsi-lt-passing {
-	padding: 3px 10px !important;
+#jsi-lt-status td {
+	height: 14px;
+	vertical-align: middle;
+}
+#jsi-lt-status-name {
+	position: relative;
+	min-width: 60px;
+	padding: 0 7px !important;;
+	background: #FFFFFF;
+	color: #0A5F5F;
+}
+#jsi-lt-status-passing:before {
+	content: '';
+	position: absolute;
+	top: 2px;
+	left: -5px;
+	display: block;
+	width: 10px;
+	height: 10px;
+	background: #FFFFFF;
+	-webkit-transform: rotate(45deg);
+}
+#jsi-lt-status-passing {
+	position: relative;
+	min-width: 140px;
+	padding-left: 5px !important;
+	background: #1488AD;
+}
+#jsi-lt-status-last:before {
+	content: '';
+	position: absolute;
+	top: 2px;
+	left: -5px;
+	display: block;
+	width: 10px;
+	height: 10px;
+	background: #1488AD;
+	-webkit-transform: rotate(45deg);
+}
+#jsi-lt-status-last {
+	position: relative;
+	width: 100%;
 }
 #jsi-lt-specs {
-	padding: 0 5px !important;
+	overflow: auto;
+	padding: 5px !important;
 }
 #jsi-lt-specs a {
 	display: inline-block;
