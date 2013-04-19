@@ -22,16 +22,25 @@ LIVETEST.General.prototype = {
 	},
 	addTest: function (nameTest, functionTest) {
 		var
-			$panelInner = $('.jsc-live-test-inner'),
+			$panelInner = $('.jsc-lt-inner-table'),
+			$rowTable = $('<tr>'),
+			$thTable = $('<th>').text('●'),
+			$tdTable = $('<td>'),
 			$section = $('<div>').addClass('jsc-live-test-section'),
 			$nameTest = $('<div>').addClass('jsc-live-test-title'),
 			$valueTest = $('<div>').addClass('jsc-live-test-value');
+
+		console.log($panelInner.length);
 
 		if (!this.tests[nameTest]) {
 			$nameTest.text(nameTest);
 			$section.append($nameTest);
 			$section.append($valueTest);
-			$panelInner.append($section);
+			$tdTable.append($section);
+			$rowTable
+				.append($thTable)
+				.append($tdTable);
+			$panelInner.append($rowTable);
 
 			this.tests[nameTest] = {
 				'function': functionTest,
@@ -67,15 +76,32 @@ LIVETEST.Elements.DURATION = {
 };
 LIVETEST.Elements.HTML = {
 	PANEL:
-		'<div id="jsi-live-test" style="display: none;">' +
+		'<div id="jsi-live-test">' +
 		'	<div id="jsi-live-test-tab">' +
 		'		<table>' +
 		'			<tr>' +
 		'				<td><a class="jsc-current" href="javascript: void(0);">General</a></td>' +
+		'				<td><a href="javascript: void(0);">Sample</a></td>' +
+		'				<td><a href="javascript: void(0);">Sample</a></td>' +
+		'				<td><a href="javascript: void(0);">Sample</a></td>' +
 		'			</tr>' +
 		'		</table>' +
 		'	</div>' +
 		'	<div id="jsi-live-test-inner-general" class="jsc-live-test-inner jsc-current">' +
+		'		<table class="jsc-lt-inner-table">' +
+		'		</table>' +
+		'	</div>' +
+		'	<div id="jsi-lt-footer">' +
+		'		<table id="jsi-lt-status">' +
+		'			<tr>' +
+		'				<td id="jsi-lt-status-name">LIVETEST</td>' +
+		'				<td id="jsi-lt-status-passing">Pssing 2 specs</td>' +
+		'				<td id="jsi-lt-status-last"></td>' +
+		'			</tr>' +
+		'		</table>' +
+		'		<p id="jsi-lt-specs">' +
+		'		<a href="javascript: void(0);" class="jsc-lt-true">●</a><a href="javascript: void(0);" class="jsc-lt-true">●</a><a href="javascript: void(0);" class="jsc-lt-false">●</a>' +
+		'		</p>' +
 		'	</div>' +
 		'</div>'
 };
@@ -127,9 +153,6 @@ if (typeof jQuery === 'function') {
 		});
 		liveTest.addTest('user agent:', function () {
 			return navigator.userAgent;
-		});
-		liveTest.addTest('hoge', function () {
-			return 'hogehoge true hoge falsetrue';
 		});
 	});
 } else {
