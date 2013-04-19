@@ -24,8 +24,8 @@ LIVETEST.General.prototype = {
 	},
 	addTest: function (test) {
 		var
+			$panelInner = null,
 			nameTab = (test.tab) ? test.tab : LIVETEST.Tab.NAME.GENERAL,
-			$panelInner = $('.jsc-lt-inner-table'),
 			$rowTable = $('<tr>'),
 			$thTable = $('<th>').text('●'),
 			$tdTable = $('<td>'),
@@ -33,7 +33,18 @@ LIVETEST.General.prototype = {
 			$nameTest = $('<div>').addClass('jsc-live-test-title'),
 			$valueTest = $('<div>').addClass('jsc-live-test-value');
 
+		if (!test.tab) {
+			test.tab = LIVETEST.Tab.NAME.GENERAL;
+		}
+
 		if (!this.tests[test.name]) {
+			if (typeof this.tab.indexTabs[nameTab] === 'undefined') {
+				this.tab.add(nameTab);
+			}
+
+			$panelInner = $('.jsc-lt-inner-table');
+			$panelInner = $panelInner.eq(this.tab.indexTabs[nameTab]);
+
 			$nameTest.text(test.name);
 			$section.append($nameTest);
 			$section.append($valueTest);
@@ -44,14 +55,10 @@ LIVETEST.General.prototype = {
 			$panelInner.append($rowTable);
 
 			this.tests[test.name] = {
-				'function': test.testCase,
+				'function': test.functionOutput,
 				$nameTest: $nameTest,
 				$valueTest: $valueTest
 			};
-
-			if (!this.tab.indexTabs[nameTab]) {
-				this.tab.add(nameTab);
-			}
 		}
 	},
 	runTest: function () {
@@ -88,20 +95,17 @@ LIVETEST.Elements.HTML = {
 		'			</tr>' +
 		'		</table>' +
 		'	</div>' +
-		'	<div id="jsi-live-test-inner-general" class="jsc-live-test-inner jsc-current">' +
-		'		<table class="jsc-lt-inner-table">' +
-		'		</table>' +
+		'	<div id="jsi-lt-inner-wrapper">' +
 		'	</div>' +
 		'	<div id="jsi-lt-footer">' +
 		'		<table id="jsi-lt-status">' +
 		'			<tr>' +
 		'				<td id="jsi-lt-status-name">LIVETEST</td>' +
-		'				<td id="jsi-lt-status-passing">Pssing 2 specs</td>' +
+		'				<td id="jsi-lt-status-passing">Pssing 0 specs</td>' +
 		'				<td id="jsi-lt-status-last"></td>' +
 		'			</tr>' +
 		'		</table>' +
 		'		<p id="jsi-lt-specs">' +
-		'		<a href="javascript: void(0);" class="jsc-lt-true">●</a><a href="javascript: void(0);" class="jsc-lt-true">●</a><a href="javascript: void(0);" class="jsc-lt-false">●</a>' +
 		'		</p>' +
 		'	</div>' +
 		'</div>'
@@ -133,6 +137,13 @@ LIVETEST.Tab.NAME = {
 LIVETEST.Tab.CLASS = {
 	CURRENT: 'jsc-current'
 };
+LIVETEST.Tab.HTML = {
+	INNER:
+		'		<div class="jsc-lt-inner">' +
+		'			<table class="jsc-lt-inner-table">' +
+		'			</table>' +
+		'		</div>'
+};
 LIVETEST.Tab.prototype = {
 	getElements: function () {
 		this.$base = $('#jsi-lt-tab');
@@ -143,7 +154,12 @@ LIVETEST.Tab.prototype = {
 			$tabAdd = $('<td>'),
 			$linkAdd = $('<a>', {
 				href: 'javascript: void(0);'
-			});
+			}),
+			$ltInner = $('<div>').addClass('jsc-lt-inner'),
+			$ltInnerTable = $('<table>').addClass('jsc-lt-inner-table');
+
+		$ltInner.append($ltInnerTable);
+		$('#jsi-lt-inner-wrapper').append($ltInner);
 
 		$linkAdd.text(nameTab);
 		$tabAdd.append($linkAdd);
@@ -160,9 +176,11 @@ LIVETEST.Tab.prototype = {
 	},
 	change: function (nameTab) {
 		var
-			$linkTarget = this.$linksInTab.eq(this.indexTabs[nameTab]);
+			$linkTarget = this.$linksInTab.eq(this.indexTabs[nameTab]),
+			$ltInnerTarget = $('.jsc-lt-inner').eq(this.indexTabs[nameTab]);
 
 		$linkTarget.addClass(LIVETEST.Tab.CLASS.CURRENT);
+		$ltInnerTarget.addClass(LIVETEST.Tab.CLASS.CURRENT);
 	}
 };
 
@@ -179,19 +197,35 @@ if (typeof jQuery === 'function') {
 
 		liveTest.addTest({
 			name: 'window: width',
-			testCase: function () {
+			functionOutput: function () {
 				return $(window).width() + ' px';
 			}
 		});
-		// liveTest.addTest('window: height', function () {
-		// 	return $(window).height() + ' px';
-		// });
-		// liveTest.addTest('window: scrollTop', function () {
-		// 	return $(window).scrollTop() + ' px';
-		// });
-		// liveTest.addTest('window: scrollLeft', function () {
-		// 	return $(window).scrollLeft() + ' px';
-		// });
+		liveTest.addTest({
+			name: 'window: height',
+			functionOutput: function () {
+				return $(window).height() + ' px';
+			}
+		});
+		liveTest.addTest({
+			name: 'window: scrollTop',
+			functionOutput: function () {
+				return $(window).scrollTop() + ' px';
+			}
+		});
+		liveTest.addTest({
+			name: 'window: scrollLeft',
+			functionOutput: function () {
+				return $(window).scrollLeft() + ' px';
+			}
+		});
+		liveTest.addTest({
+			name: 'test',
+			tab: 'test',
+			functionOutput: function () {
+				return $(window).scrollLeft() + ' px';
+			}
+		});
 	});
 } else {
 	console.log('Please load jQuery');

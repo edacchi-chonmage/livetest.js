@@ -42,19 +42,22 @@
 	background: #1B1D1E;
 	text-decoration: none;
 }
-.jsc-live-test-inner {
+.jsc-lt-inner {
 	display: none;
 	height: 200px;
 	margin-top: 1px !important;
 	overflow: auto;
 }
-.jsc-live-test-inner {
+.jsc-lt-inner {
+	display: none;
+}
+.jsc-lt-inner.jsc-current {
 	display: block;
 }
-.jsc-live-test-inner table {
+.jsc-lt-inner table {
 	border-collapse: collapse;
 }
-.jsc-live-test-inner table th {
+.jsc-lt-inner table th {
 	width: 25px;
 	min-width: 25px;
 	background: #232526;
@@ -62,7 +65,7 @@
 	text-align: center;
 	vertical-align: top;
 }
-.jsc-live-test-inner table td {
+.jsc-lt-inner table td {
 	padding: 0 5px !important;
 }
 .jsc-live-test-section {
