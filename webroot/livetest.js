@@ -49,7 +49,7 @@ LIVETEST.General.prototype = {
 				$valueTest: $valueTest
 			};
 
-			if (!this.tab.tabs[nameTab]) {
+			if (!this.tab.indexTabs[nameTab]) {
 				this.tab.add(nameTab);
 			}
 		}
@@ -122,12 +122,16 @@ LIVETEST.Elements.prototype = {
 };
 
 LIVETEST.Tab = function () {
-	this.tabs = {};
+	this.indexTabs = {};
+	this.$linksInTab = null;
 	this.$base = null;
 	this.$inner = null;
 };
 LIVETEST.Tab.NAME = {
 	GENERAL: 'General'
+};
+LIVETEST.Tab.CLASS = {
+	CURRENT: 'jsc-current'
 };
 LIVETEST.Tab.prototype = {
 	getElements: function () {
@@ -143,18 +147,22 @@ LIVETEST.Tab.prototype = {
 
 		$linkAdd.text(nameTab);
 		$tabAdd.append($linkAdd);
-		this.tabs[nameTab] = $linkAdd;
+		this.indexTabs[nameTab] = Object.keys(this.indexTabs).length;
 
 		this.$inner.append($tabAdd);
+		this.$linksInTab = this.$inner.find('a');
 
-		if (Object.keys(this.tabs).length === 1) {
+		if (Object.keys(this.indexTabs).length === 1) {
 			this.change(nameTab);
 		}
 	},
 	remove: function () {
 	},
 	change: function (nameTab) {
-		this.tabs[nameTab].addClass('jsc-current');
+		var
+			$linkTarget = this.$linksInTab.eq(this.indexTabs[nameTab]);
+
+		$linkTarget.addClass(LIVETEST.Tab.CLASS.CURRENT);
 	}
 };
 
