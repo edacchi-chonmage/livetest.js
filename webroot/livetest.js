@@ -110,6 +110,7 @@ liveTestTab;
 if (typeof jQuery === 'function') {
 	jQuery(function () {
 		liveTestElements = new LIVETEST.Elements();
+		liveTestTab = new LIVETEST.Tab();
 		liveTest = new LIVETEST.General(liveTestElements);
 
 		liveTest.addTest('window: width', function () {
