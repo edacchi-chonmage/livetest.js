@@ -1,0 +1,63 @@
+blockdiag {
+	orientation = portrait;
+
+	livetest.init [
+		label = 'Initialize LIVETEST'
+	];
+	livetest.create.panel [
+		label = 'Create panel'
+	];
+	livetest.add [
+		label = 'Add test'
+	];
+	livetest.run [
+		label = 'Run test'
+	];
+	livetest.interval[
+		label = 'Interval loop'
+	];
+	livetest.panel.resize [
+		label = 'Resize LIVETEST\npanel'
+	];
+
+	tab.init [
+		label = 'Initialive Tab'
+	];
+	tab.change [
+		label = 'Change tab'
+	];
+
+	window.resize [
+		label = 'Resize window'
+	];
+
+	script.event [
+		label = 'Drive event'
+	];
+	script.somewhere [
+		label = 'Somewhere arround\nscript'
+	];
+
+
+	livetest.init ->
+		livetest.create.panel;
+
+	livetest.create.panel ->
+		tab.init,
+		livetest.interval;
+
+	livetest.create.panel ->
+		window.resize ->
+			livetest.panel.resize;
+
+	tab.init ->
+		tab.change;
+
+	tab.change,
+	script.event,
+	livetest.interval ->
+		livetest.run;
+
+	script.somewhere
+		-> livetest.add;
+}
