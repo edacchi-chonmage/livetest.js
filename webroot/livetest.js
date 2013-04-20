@@ -4,6 +4,7 @@ LIVETEST.General = function () {
 	this.testcases = {};
 	this.tab = new LIVETEST.Tab();
 	this.countPassingSpecs = 0;
+	this.$countPassingSpecs = null;
 	this.$body = $('body');
 	this.$head = $('head');
 	this.$panel = $(
@@ -20,7 +21,9 @@ LIVETEST.General = function () {
 		'		<table id="jsi-lt-status">' +
 		'			<tr>' +
 		'				<td id="jsi-lt-status-name">LIVETEST</td>' +
-		'				<td id="jsi-lt-status-passing">Passing 0 specs</td>' +
+		'				<td id="jsi-lt-status-passing">' +
+		'					Passing <span id="jsi-lt-status-count-spec">0</span> specs' +
+		'				</td>' +
 		'				<td id="jsi-lt-status-last"></td>' +
 		'			</tr>' +
 		'		</table>' +
@@ -81,6 +84,7 @@ LIVETEST.General.prototype = {
 	},
 	generatePanel: function () {
 		this.$body.append(this.$panel);
+		this.$countPassingSpecs = $('#jsi-lt-status-count-spec');
 	},
 	readStyleSheetToFadeInPanel: function () {
 		this.$head.append('<link rel="stylesheet" href="' + LIVETEST.General.PATH.CSS + '" />');
@@ -154,6 +158,7 @@ LIVETEST.General.prototype = {
 				.text(resultOutput);
 		}
 
+		this.$countPassingSpecs.text(this.countPassingSpecs);
 		this.changeColorBoolean();
 	},
 	checkSpec: function (testcaseTarget) {
@@ -169,6 +174,7 @@ LIVETEST.General.prototype = {
 		if (testcaseTarget.functionTest()) {
 			testcaseTarget.$specTest.addClass(LIVETEST.General.CLASS.BOOL.TRUE);
 			testcaseTarget.$specFooterCircle.addClass(LIVETEST.General.CLASS.BOOL.TRUE);
+			this.countPassingSpecs++;
 		} else {
 			testcaseTarget.$specTest.addClass(LIVETEST.General.CLASS.BOOL.FALSE);
 			testcaseTarget.$specFooterCircle.addClass(LIVETEST.General.CLASS.BOOL.FALSE);
@@ -317,16 +323,7 @@ if (typeof jQuery === 'function') {
 				return $(window).scrollTop() + ' px';
 			},
 			functionTest: function () {
-				return $(window).scrollTop() > 100;
-			}
-		});
-		liveTest.addTestcase({
-			nameTest: 'window: scrollBottom',
-			functionOutput: function () {
-				return ($(window).scrollTop() + $(window).height()) + ' px';
-			},
-			functionTest: function () {
-				return ($(window).scrollTop() + $(window).height()) > 1600;
+				return $(window).scrollTop() >= 100;
 			}
 		});
 		liveTest.addTestcase({
