@@ -50,6 +50,7 @@ LIVETEST.General.BASE_ELEMENTS = {
 };
 LIVETEST.General.CLASS = {
 	OUTPUT: {
+		BASE: 'jsc-lt-output',
 		NAME: 'jsc-lt-op-name',
 		VALUE: 'jsc-lt-op-value',
 		TABLE: 'jsc-lt-op-table'
@@ -199,10 +200,14 @@ LIVETEST.Tab.prototype = {
 	change: function (nameTab) {
 		var
 			$linkTarget = this.$linksInTab.eq(this.indexTabs[nameTab]),
-			$ltInnerTarget = $('.jsc-lt-output').eq(this.indexTabs[nameTab]);
+			$outputsChildren = this.$outputs.find('.' + LIVETEST.General.CLASS.OUTPUT.BASE),
+			$outputTarget = $outputsChildren.eq(this.indexTabs[nameTab]);
+
+		this.$linksInTab.removeClass(LIVETEST.Tab.CLASS.CURRENT);
+		$outputsChildren.removeClass(LIVETEST.Tab.CLASS.CURRENT);
 
 		$linkTarget.addClass(LIVETEST.Tab.CLASS.CURRENT);
-		$ltInnerTarget.addClass(LIVETEST.Tab.CLASS.CURRENT);
+		$outputTarget.addClass(LIVETEST.Tab.CLASS.CURRENT);
 	}
 };
 
@@ -239,6 +244,7 @@ if (typeof jQuery === 'function') {
 		});
 		liveTest.addTestcase({
 			nameTest: 'test',
+			nameTab: 'test',
 			functionOutput: function () {
 				return 'true false trflafalse';
 			}
