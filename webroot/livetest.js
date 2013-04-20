@@ -173,6 +173,17 @@ LIVETEST.Tab.prototype = {
 		this.$outputs = $('#jsi-lt-outputs');
 		this.$list = $('#jsi-lt-tab-list');
 	},
+	bindEvent: function () {
+		var
+			nameTab = '',
+			_self = this;
+
+		this.$linksInTab.off('click');
+		this.$linksInTab.on('click', function () {
+			nameTab = $(this).text();
+			_self.change(nameTab, _self);
+		});
+	},
 	add: function (nameTab) {
 		var
 			lengthTabs,
@@ -192,18 +203,24 @@ LIVETEST.Tab.prototype = {
 		lengthTabs = Object.keys(this.indexTabs).length;
 
 		if (lengthTabs === LIVETEST.Tab.COUNT_FIRST_TAB) {
-			this.change(nameTab);
+			this.change(nameTab, this);
 		}
+
+		this.bindEvent();
 	},
 	remove: function () {
 	},
-	change: function (nameTab) {
+	change: function (nameTab, _self) {
 		var
-			$linkTarget = this.$linksInTab.eq(this.indexTabs[nameTab]),
-			$outputsChildren = this.$outputs.find('.' + LIVETEST.General.CLASS.OUTPUT.BASE),
-			$outputTarget = $outputsChildren.eq(this.indexTabs[nameTab]);
+			$linkTarget = _self.$linksInTab.eq(_self.indexTabs[nameTab]),
+			$outputsChildren = _self.$outputs.find('.' + LIVETEST.General.CLASS.OUTPUT.BASE),
+			$outputTarget = $outputsChildren.eq(_self.indexTabs[nameTab]);
 
-		this.$linksInTab.removeClass(LIVETEST.Tab.CLASS.CURRENT);
+		if ($linkTarget.hasClass(LIVETEST.Tab.CLASS.CURRENT)) {
+			return;
+		}
+
+		_self.$linksInTab.removeClass(LIVETEST.Tab.CLASS.CURRENT);
 		$outputsChildren.removeClass(LIVETEST.Tab.CLASS.CURRENT);
 
 		$linkTarget.addClass(LIVETEST.Tab.CLASS.CURRENT);
