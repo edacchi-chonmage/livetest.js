@@ -74,12 +74,6 @@
 .jsc-lt-op-value {
 	padding-left: 20px !important;
 }
-.jsc-lt-value-true {
-	color: #8ADC40 !important;
-}
-.jsc-lt-value-false {
-	color: #F62C5E !important;
-}
 .jsc-lt-true {
 	color: #8ADC40 !important;
 }
@@ -138,11 +132,18 @@
 	position: relative;
 	width: 100%;
 }
-#jsi-lt-specs {
+#jsi-lt-footer-specs {
 	overflow: auto;
 	padding: 5px !important;
 }
-#jsi-lt-specs a {
+.jsc-lt-footer-spec {
+	display: none;
+}
+.jsc-lt-footer-spec.jsc-current {
+	display: block;
+}
+.jsc-lt-footer-spec a {
 	display: inline-block;
 	padding: 0 5px;
+	color: #425558;
 }

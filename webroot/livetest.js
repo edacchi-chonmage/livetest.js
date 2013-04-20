@@ -3,6 +3,7 @@ var LIVETEST = window.LIVETEST || {};
 LIVETEST.General = function () {
 	this.testcases = {};
 	this.tab = new LIVETEST.Tab();
+	this.countPassingSpecs = 0;
 	this.$body = $('body');
 	this.$head = $('head');
 	this.$panel = $(
@@ -23,7 +24,7 @@ LIVETEST.General = function () {
 		'				<td id="jsi-lt-status-last"></td>' +
 		'			</tr>' +
 		'		</table>' +
-		'		<p id="jsi-lt-specs">' +
+		'		<p id="jsi-lt-footer-specs">' +
 		'		</p>' +
 		'	</div>' +
 		'</div>'
@@ -46,6 +47,9 @@ LIVETEST.General.BASE_ELEMENTS = {
 		'		<div class="jsc-lt-op-value"></div>' +
 		'	</td>' +
 		'</tr>'
+	),
+	$FOOTER_SPEC_CIRCLE: $(
+		'<a hrev="javascript: void(0);">●</a>'
 	)
 };
 LIVETEST.General.CLASS = {
@@ -65,7 +69,7 @@ LIVETEST.General.REGEX = {
 	COLOR_BOOL: /(true|false)/ig
 };
 LIVETEST.General.REPLACE = {
-	COLOR_BOOL: '<span class="jsc-lt-value-$1">$1</span>'
+	COLOR_BOOL: '<span class="jsc-lt-$1">$1</span>'
 };
 LIVETEST.General.INTERVAL = 50;
 LIVETEST.General.prototype = {
@@ -94,8 +98,10 @@ LIVETEST.General.prototype = {
 	addTestcase: function (testcase) {
 		var
 			$tableOutput,
+			$specFooter,
 			nameTab = (testcase.nameTab) ? testcase.nameTab : LIVETEST.Tab.NAME.GENERAL,
 			$testsection = LIVETEST.General.BASE_ELEMENTS.$TEST_SECTION.clone(),
+			$specFooterCircle = LIVETEST.General.BASE_ELEMENTS.$FOOTER_SPEC_CIRCLE.clone(),
 			$nameTest = $testsection.find('.' + LIVETEST.General.CLASS.OUTPUT.NAME),
 			$valueTest = $testsection.find('.' + LIVETEST.General.CLASS.OUTPUT.VALUE);
 
@@ -112,13 +118,18 @@ LIVETEST.General.prototype = {
 			$tableOutput = this.$panel.find('.' + LIVETEST.General.CLASS.OUTPUT.TABLE);
 			$tableOutput = $tableOutput.eq(this.tab.indexTabs[nameTab]);
 
+			$specFooter = this.tab.$specsFooter.find('.' + LIVETEST.Tab.CLASS.FOOTER_SPEC);
+			$specFooter = $specFooter.eq(this.tab.indexTabs[nameTab]);
+
 			$nameTest.text(testcase.nameTest);
 			$tableOutput.append($testsection);
+			$specFooter.append($specFooterCircle);
 
 			this.testcases[testcase.nameTest] = testcase;
 			this.testcases[testcase.nameTest].$specTest = $testsection.find('.' + LIVETEST.General.CLASS.OUTPUT.SPEC);
 			this.testcases[testcase.nameTest].$nameTest = $nameTest;
 			this.testcases[testcase.nameTest].$valueTest = $valueTest;
+			this.testcases[testcase.nameTest].$specFooterCircle = $specFooterCircle;
 		}
 	},
 	runTest: function () {
@@ -126,6 +137,8 @@ LIVETEST.General.prototype = {
 			nameTest,
 			resultOutput,
 			testcaseTarget;
+
+		this.countPassingSpecs = 0;
 
 		for (nameTest in this.testcases) {
 			testcaseTarget = this.testcases[nameTest];
@@ -146,6 +159,8 @@ LIVETEST.General.prototype = {
 	checkSpec: function (testcaseTarget) {
 		testcaseTarget.$specTest.removeClass(LIVETEST.General.CLASS.BOOL.TRUE);
 		testcaseTarget.$specTest.removeClass(LIVETEST.General.CLASS.BOOL.FALSE);
+		testcaseTarget.$specFooterCircle.removeClass(LIVETEST.General.CLASS.BOOL.TRUE);
+		testcaseTarget.$specFooterCircle.removeClass(LIVETEST.General.CLASS.BOOL.FALSE);
 
 		if (typeof testcaseTarget.functionTest !== 'function') {
 			return;
@@ -153,8 +168,10 @@ LIVETEST.General.prototype = {
 
 		if (testcaseTarget.functionTest()) {
 			testcaseTarget.$specTest.addClass(LIVETEST.General.CLASS.BOOL.TRUE);
+			testcaseTarget.$specFooterCircle.addClass(LIVETEST.General.CLASS.BOOL.TRUE);
 		} else {
 			testcaseTarget.$specTest.addClass(LIVETEST.General.CLASS.BOOL.FALSE);
+			testcaseTarget.$specFooterCircle.addClass(LIVETEST.General.CLASS.BOOL.FALSE);
 		}
 	},
 	changeColorBoolean: function () {
@@ -181,12 +198,14 @@ LIVETEST.Tab = function () {
 	this.$outputs = null;
 	this.$linksInTab = null;
 	this.$list = null;
+	this.$specsFooter = null;
 };
 LIVETEST.Tab.NAME = {
 	GENERAL: 'General'
 };
 LIVETEST.Tab.CLASS = {
-	CURRENT: 'jsc-current'
+	CURRENT: 'jsc-current',
+	FOOTER_SPEC: 'jsc-lt-footer-spec'
 };
 LIVETEST.Tab.BASE_ELEMENTS = {
 	$OUTPUT: $(
@@ -199,6 +218,10 @@ LIVETEST.Tab.BASE_ELEMENTS = {
 		'<td>' +
 		'	<a href="javascript: void(0);"></a>' +
 		'</td>'
+	),
+	$FOOTER_SPEC: $(
+		'<div class="jsc-lt-footer-spec">' +
+		'</div>'
 	)
 };
 LIVETEST.Tab.COUNT_FIRST_TAB = 1;
@@ -206,6 +229,7 @@ LIVETEST.Tab.prototype = {
 	getElements: function () {
 		this.$outputs = $('#jsi-lt-outputs');
 		this.$list = $('#jsi-lt-tab-list');
+		this.$specsFooter = $('#jsi-lt-footer-specs');
 	},
 	bindEvent: function () {
 		var
@@ -223,11 +247,13 @@ LIVETEST.Tab.prototype = {
 			lengthTabs,
 			$tabAdd = LIVETEST.Tab.BASE_ELEMENTS.$TAB.clone(),
 			$linkAdd = $tabAdd.find('a'),
-			$output = LIVETEST.Tab.BASE_ELEMENTS.$OUTPUT.clone();
+			$output = LIVETEST.Tab.BASE_ELEMENTS.$OUTPUT.clone(),
+			$specFooter = LIVETEST.Tab.BASE_ELEMENTS.$FOOTER_SPEC.clone();
 
 		this.$outputs.append($output);
 		$linkAdd.text(nameTab);
 		$tabAdd.append($linkAdd);
+		this.$specsFooter.append($specFooter);
 
 		lengthTabs = Object.keys(this.indexTabs).length;
 		this.indexTabs[nameTab] = lengthTabs;
@@ -248,7 +274,9 @@ LIVETEST.Tab.prototype = {
 		var
 			$linkTarget = _self.$linksInTab.eq(_self.indexCurrent),
 			$outputsChildren = _self.$outputs.find('.' + LIVETEST.General.CLASS.OUTPUT.BASE),
-			$outputTarget = $outputsChildren.eq(_self.indexCurrent);
+			$outputTarget = $outputsChildren.eq(_self.indexCurrent),
+			$specsFooterChildren = _self.$specsFooter.find('.' + LIVETEST.Tab.CLASS.FOOTER_SPEC),
+			$specFooterTarget = $specsFooterChildren.eq(_self.indexCurrent);
 
 		if ($linkTarget.hasClass(LIVETEST.Tab.CLASS.CURRENT)) {
 			return;
@@ -256,9 +284,11 @@ LIVETEST.Tab.prototype = {
 
 		_self.$linksInTab.removeClass(LIVETEST.Tab.CLASS.CURRENT);
 		$outputsChildren.removeClass(LIVETEST.Tab.CLASS.CURRENT);
+		$specsFooterChildren.removeClass(LIVETEST.Tab.CLASS.CURRENT);
 
 		$linkTarget.addClass(LIVETEST.Tab.CLASS.CURRENT);
 		$outputTarget.addClass(LIVETEST.Tab.CLASS.CURRENT);
+		$specFooterTarget.addClass(LIVETEST.Tab.CLASS.CURRENT);
 	}
 };
 
@@ -294,12 +324,18 @@ if (typeof jQuery === 'function') {
 			nameTest: 'window: scrollBottom',
 			functionOutput: function () {
 				return ($(window).scrollTop() + $(window).height()) + ' px';
+			},
+			functionTest: function () {
+				return ($(window).scrollTop() + $(window).height()) > 1600;
 			}
 		});
 		liveTest.addTestcase({
 			nameTest: 'window: scrollLeft',
 			functionOutput: function () {
 				return $(window).scrollLeft() + ' px';
+			},
+			functionTest: function () {
+				return $(window).scrollLeft() >= 0;
 			}
 		});
 		liveTest.addTestcase({
