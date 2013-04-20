@@ -19,7 +19,7 @@ LIVETEST.General = function () {
 		'		<table id="jsi-lt-status">' +
 		'			<tr>' +
 		'				<td id="jsi-lt-status-name">LIVETEST</td>' +
-		'				<td id="jsi-lt-status-passing">Pssing 0 specs</td>' +
+		'				<td id="jsi-lt-status-passing">Passing 0 specs</td>' +
 		'				<td id="jsi-lt-status-last"></td>' +
 		'			</tr>' +
 		'		</table>' +
@@ -40,7 +40,7 @@ LIVETEST.General.DURATION = {
 LIVETEST.General.BASE_ELEMENTS = {
 	$TEST_SECTION: $(
 		'<tr>' +
-		'	<th>●</th>' +
+		'	<th class="jsc-lt-op-spec">●</th>' +
 		'	<td>' +
 		'		<div class="jsc-lt-op-name"></div>' +
 		'		<div class="jsc-lt-op-value"></div>' +
@@ -49,8 +49,13 @@ LIVETEST.General.BASE_ELEMENTS = {
 	)
 };
 LIVETEST.General.CLASS = {
+	BOOL: {
+		TRUE: 'jsc-lt-true',
+		FALSE: 'jsc-lt-false'
+	},
 	OUTPUT: {
 		BASE: 'jsc-lt-output',
+		SPEC: 'jsc-lt-op-spec',
 		NAME: 'jsc-lt-op-name',
 		VALUE: 'jsc-lt-op-value',
 		TABLE: 'jsc-lt-op-table'
@@ -111,17 +116,46 @@ LIVETEST.General.prototype = {
 			$tableOutput.append($testsection);
 
 			this.testcases[testcase.nameTest] = testcase;
+			this.testcases[testcase.nameTest].$specTest = $testsection.find('.' + LIVETEST.General.CLASS.OUTPUT.SPEC);
 			this.testcases[testcase.nameTest].$nameTest = $nameTest;
 			this.testcases[testcase.nameTest].$valueTest = $valueTest;
 		}
 	},
 	runTest: function () {
-		for (var nameTest in this.testcases) {
-			this.testcases[nameTest].$valueTest
-				.text(this.testcases[nameTest].functionOutput());
+		var
+			nameTest,
+			resultOutput,
+			testcaseTarget;
+
+		for (nameTest in this.testcases) {
+			testcaseTarget = this.testcases[nameTest];
+
+			if (this.tab.indexTabs[testcaseTarget.nameTab] !== this.tab.indexCurrent) {
+				// Through the hidden tab.
+				continue;
+			}
+
+			resultOutput = testcaseTarget.functionOutput();
+			this.checkSpec(testcaseTarget);
+			testcaseTarget.$valueTest
+				.text(resultOutput);
 		}
 
 		this.changeColorBoolean();
+	},
+	checkSpec: function (testcaseTarget) {
+		testcaseTarget.$specTest.removeClass(LIVETEST.General.CLASS.BOOL.TRUE);
+		testcaseTarget.$specTest.removeClass(LIVETEST.General.CLASS.BOOL.FALSE);
+
+		if (typeof testcaseTarget.functionTest !== 'function') {
+			return;
+		}
+
+		if (testcaseTarget.functionTest()) {
+			testcaseTarget.$specTest.addClass(LIVETEST.General.CLASS.BOOL.TRUE);
+		} else {
+			testcaseTarget.$specTest.addClass(LIVETEST.General.CLASS.BOOL.FALSE);
+		}
 	},
 	changeColorBoolean: function () {
 		var
@@ -208,8 +242,6 @@ LIVETEST.Tab.prototype = {
 
 		this.bindEvent();
 	},
-	remove: function () {
-	},
 	change: function (nameTab, _self) {
 		_self.indexCurrent = _self.indexTabs[nameTab];
 
@@ -253,6 +285,15 @@ if (typeof jQuery === 'function') {
 			nameTest: 'window: scrollTop',
 			functionOutput: function () {
 				return $(window).scrollTop() + ' px';
+			},
+			functionTest: function () {
+				return $(window).scrollTop() > 100;
+			}
+		});
+		liveTest.addTestcase({
+			nameTest: 'window: scrollBottom',
+			functionOutput: function () {
+				return ($(window).scrollTop() + $(window).height()) + ' px';
 			}
 		});
 		liveTest.addTestcase({
@@ -271,6 +312,20 @@ if (typeof jQuery === 'function') {
 		liveTest.addTestcase({
 			nameTest: 'test',
 			nameTab: 'test',
+			functionOutput: function () {
+				return 'true false trflafalse';
+			}
+		});
+		liveTest.addTestcase({
+			nameTest: 'test1',
+			nameTab: 'test1',
+			functionOutput: function () {
+				return 'true false trflafalse';
+			}
+		});
+		liveTest.addTestcase({
+			nameTest: 'test2',
+			nameTab: 'test1',
 			functionOutput: function () {
 				return 'true false trflafalse';
 			}
