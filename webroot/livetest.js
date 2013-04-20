@@ -55,6 +55,12 @@ LIVETEST.General.CLASS = {
 		TABLE: 'jsc-lt-op-table'
 	}
 };
+LIVETEST.General.REGEX = {
+	COLOR_BOOL: /(true|false)/ig
+};
+LIVETEST.General.REPLACE = {
+	COLOR_BOOL: '<span class="jsc-lt-value-$1">$1</span>'
+};
 LIVETEST.General.INTERVAL = 50;
 LIVETEST.General.prototype = {
 	init: function () {
@@ -111,14 +117,26 @@ LIVETEST.General.prototype = {
 	},
 	runTest: function () {
 		for (var nameTest in this.testcases) {
-			this.testcases[nameTest].$valueTest.text(this.testcases[nameTest].functionOutput());
+			this.testcases[nameTest].$valueTest
+				.text(this.testcases[nameTest].functionOutput());
 		}
 
 		this.changeColorBoolean();
 	},
 	changeColorBoolean: function () {
-		this.$panel.find('.jsc-lt-value').each(function () {
-			$(this).html($(this).text().replace(/(true|false)/ig, '<span class="jsc-lt-value-$1">$1</span>'));
+		var
+			$valueTest,
+			valueColored,
+			$valuesTest = this.$panel.find('.' + LIVETEST.General.CLASS.OUTPUT.VALUE);
+
+		$valuesTest.each(function () {
+			$valueTest = $(this);
+			valueColored = $valueTest.text().replace(
+				LIVETEST.General.REGEX.COLOR_BOOL,
+				LIVETEST.General.REPLACE.COLOR_BOOL
+			);
+
+			$valueTest.html(valueColored);
 		});
 	}
 };
@@ -216,9 +234,8 @@ if (typeof jQuery === 'function') {
 		});
 		liveTest.addTestcase({
 			nameTest: 'test',
-			nameTab: 'test',
 			functionOutput: function () {
-				return $(window).scrollLeft() + ' px';
+				return 'true false trflafalse';
 			}
 		});
 	});
