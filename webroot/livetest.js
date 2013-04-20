@@ -87,7 +87,7 @@ LIVETEST.General.prototype = {
 	},
 	addTestcase: function (testcase) {
 		var
-			$tableOutput = null,
+			$tableOutput,
 			nameTab = (testcase.nameTab) ? testcase.nameTab : LIVETEST.Tab.NAME.GENERAL,
 			$testsection = LIVETEST.General.BASE_ELEMENTS.$TEST_SECTION.clone(),
 			$nameTest = $testsection.find('.' + LIVETEST.General.CLASS.OUTPUT.NAME),
@@ -143,9 +143,9 @@ LIVETEST.General.prototype = {
 LIVETEST.Tab = function () {
 	this.currentIndex = 0;
 	this.indexTabs = {};
+	this.$outputs = null;
 	this.$linksInTab = null;
-	this.$base = null;
-	this.$inner = null;
+	this.$list = null;
 };
 LIVETEST.Tab.NAME = {
 	GENERAL: 'General'
@@ -153,36 +153,44 @@ LIVETEST.Tab.NAME = {
 LIVETEST.Tab.CLASS = {
 	CURRENT: 'jsc-current'
 };
-LIVETEST.Tab.HTML = {
-	INNER:
-		'		<div class="jsc-lt-output">' +
-		'			<table class="jsc-lt-op-table">' +
-		'			</table>' +
-		'		</div>'
+LIVETEST.Tab.BASE_ELEMENTS = {
+	$OUTPUT: $(
+		'<div class="jsc-lt-output">' +
+		'	<table class="jsc-lt-op-table">' +
+		'	</table>' +
+		'</div>'
+	),
+	$TAB: $(
+		'<td>' +
+		'	<a href="javascript: void(0);"></a>' +
+		'</td>'
+	)
 };
+LIVETEST.Tab.COUNT_FIRST_TAB = 1;
 LIVETEST.Tab.prototype = {
 	getElements: function () {
-		this.$base = $('#jsi-lt-tab');
-		this.$inner = $('#jsi-lt-tab-list');
+		this.$outputs = $('#jsi-lt-outputs');
+		this.$list = $('#jsi-lt-tab-list');
 	},
 	add: function (nameTab) {
 		var
-			$tabAdd = $('<td>'),
-			$linkAdd = $('<a href="javascript: void(0);">'),
-			$ltInner = $('<div>').addClass('jsc-lt-output'),
-			$ltInnerTable = $('<table>').addClass('jsc-lt-op-table');
+			lengthTabs,
+			$tabAdd = LIVETEST.Tab.BASE_ELEMENTS.$TAB.clone(),
+			$linkAdd = $tabAdd.find('a'),
+			$output = LIVETEST.Tab.BASE_ELEMENTS.$OUTPUT.clone();
 
-		$ltInner.append($ltInnerTable);
-		$('#jsi-lt-outputs').append($ltInner);
-
+		this.$outputs.append($output);
 		$linkAdd.text(nameTab);
 		$tabAdd.append($linkAdd);
-		this.indexTabs[nameTab] = Object.keys(this.indexTabs).length;
 
-		this.$inner.append($tabAdd);
-		this.$linksInTab = this.$inner.find('a');
+		lengthTabs = Object.keys(this.indexTabs).length;
+		this.indexTabs[nameTab] = lengthTabs;
 
-		if (Object.keys(this.indexTabs).length === 1) {
+		this.$list.append($tabAdd);
+		this.$linksInTab = this.$list.find('a');
+		lengthTabs = Object.keys(this.indexTabs).length;
+
+		if (lengthTabs === LIVETEST.Tab.COUNT_FIRST_TAB) {
 			this.change(nameTab);
 		}
 	},
