@@ -23,14 +23,14 @@
 	text-decoration: none;
 }
 
-#jsi-live-test-tab {
+#jsi-lt-tab {
 	background: #F8F8F2;
 	padding: 0;
 }
-#jsi-live-test-tab table {
+#jsi-lt-tab table {
 	border-collapse: collapse;
 }
-#jsi-live-test-tab td a {
+#jsi-lt-tab td a {
 	display: block;
 	height: 100%;
 	padding: 1px 10px;
@@ -38,26 +38,26 @@
 	background: #A9A9A9;
 	text-decoration: underline;
 }
-#jsi-live-test-tab td a.jsc-current {
+#jsi-lt-tab td a.jsc-current {
 	background: #1B1D1E;
 	text-decoration: none;
 }
-.jsc-lt-inner {
+.jsc-lt-output {
 	display: none;
 	height: 200px;
 	margin-top: 1px !important;
 	overflow: auto;
 }
-.jsc-lt-inner {
+.jsc-lt-output {
 	display: none;
 }
-.jsc-lt-inner.jsc-current {
+.jsc-lt-output.jsc-current {
 	display: block;
 }
-.jsc-lt-inner table {
+.jsc-lt-output table {
 	border-collapse: collapse;
 }
-.jsc-lt-inner table th {
+.jsc-lt-output table th {
 	width: 25px;
 	min-width: 25px;
 	background: #232526;
@@ -65,22 +65,22 @@
 	text-align: center;
 	vertical-align: top;
 }
-.jsc-lt-inner table td {
+.jsc-lt-output table td {
 	padding: 0 5px !important;
 }
-.jsc-live-test-section {
+.jsc-lt-section {
 	margin-bottom: 1em !important;
 }
-.jsc-live-test-title {
+.jsc-lt-title {
 	color: #FB9632;
 }
-#jsi-live-test .jsc-live-test-value {
+#jsi-lt .jsc-lt-value {
 	padding-left: 20px;
 }
-.jsc-live-test-value-true {
+.jsc-lt-value-true {
 	color: #8ADC40 !important;
 }
-.jsc-live-test-value-false {
+.jsc-lt-value-false {
 	color: #F62C5E !important;
 }
 .jsc-lt-true {
