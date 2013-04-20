@@ -91,8 +91,7 @@ LIVETEST.General.prototype = {
 			nameTab = (testcase.nameTab) ? testcase.nameTab : LIVETEST.Tab.NAME.GENERAL,
 			$testsection = LIVETEST.General.BASE_ELEMENTS.$TEST_SECTION.clone(),
 			$nameTest = $testsection.find('.' + LIVETEST.General.CLASS.OUTPUT.NAME),
-			$valueTest = $testsection.find('.' + LIVETEST.General.CLASS.OUTPUT.VALUE),
-			testcaseTarget = this.testcases[testcase.nameTest];
+			$valueTest = $testsection.find('.' + LIVETEST.General.CLASS.OUTPUT.VALUE);
 
 		if (!testcase.nameTab) {
 			testcase.nameTab = LIVETEST.Tab.NAME.GENERAL;
@@ -169,9 +168,7 @@ LIVETEST.Tab.prototype = {
 	add: function (nameTab) {
 		var
 			$tabAdd = $('<td>'),
-			$linkAdd = $('<a>', {
-				href: 'javascript: void(0);'
-			}),
+			$linkAdd = $('<a href="javascript: void(0);">'),
 			$ltInner = $('<div>').addClass('jsc-lt-output'),
 			$ltInnerTable = $('<table>').addClass('jsc-lt-op-table');
 
