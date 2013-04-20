@@ -129,6 +129,8 @@ LIVETEST.General.prototype = {
 			$tableOutput.append($testsection);
 			$specFooter.append($specFooterCircle);
 
+			this.runTest();
+
 			this.testcases[testcase.nameTest] = testcase;
 			this.testcases[testcase.nameTest].$specTest = $testsection.find('.' + LIVETEST.General.CLASS.OUTPUT.SPEC);
 			this.testcases[testcase.nameTest].$nameTest = $nameTest;
@@ -147,6 +149,10 @@ LIVETEST.General.prototype = {
 		for (nameTest in this.testcases) {
 			testcaseTarget = this.testcases[nameTest];
 
+			if (testcaseTarget.flgRanFirst && testcaseTarget.flgNoInterval) {
+				continue;
+			}
+
 			if (this.tab.indexTabs[testcaseTarget.nameTab] !== this.tab.indexCurrent) {
 				// Through the hidden tab.
 				continue;
@@ -156,6 +162,8 @@ LIVETEST.General.prototype = {
 			this.checkSpec(testcaseTarget);
 			testcaseTarget.$valueTest
 				.text(resultOutput);
+
+			testcaseTarget.flgRanFirst = true;
 		}
 
 		this.$countPassingSpecs.text(this.countPassingSpecs);
@@ -333,13 +341,6 @@ if (typeof jQuery === 'function') {
 			},
 			functionTest: function () {
 				return $(window).scrollLeft() >= 0;
-			}
-		});
-		liveTest.addTestcase({
-			nameTest: 'test',
-			nameTab: 'test',
-			functionOutput: function () {
-				return 'true false trflafalse';
 			}
 		});
 		liveTest.addTestcase({
