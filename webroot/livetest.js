@@ -142,7 +142,7 @@ LIVETEST.General.prototype = {
 };
 
 LIVETEST.Tab = function () {
-	this.currentIndex = 0;
+	this.indexCurrent = 0;
 	this.indexTabs = {};
 	this.$outputs = null;
 	this.$linksInTab = null;
@@ -211,10 +211,12 @@ LIVETEST.Tab.prototype = {
 	remove: function () {
 	},
 	change: function (nameTab, _self) {
+		_self.indexCurrent = _self.indexTabs[nameTab];
+
 		var
-			$linkTarget = _self.$linksInTab.eq(_self.indexTabs[nameTab]),
+			$linkTarget = _self.$linksInTab.eq(_self.indexCurrent),
 			$outputsChildren = _self.$outputs.find('.' + LIVETEST.General.CLASS.OUTPUT.BASE),
-			$outputTarget = $outputsChildren.eq(_self.indexTabs[nameTab]);
+			$outputTarget = $outputsChildren.eq(_self.indexCurrent);
 
 		if ($linkTarget.hasClass(LIVETEST.Tab.CLASS.CURRENT)) {
 			return;
@@ -257,6 +259,13 @@ if (typeof jQuery === 'function') {
 			nameTest: 'window: scrollLeft',
 			functionOutput: function () {
 				return $(window).scrollLeft() + ' px';
+			}
+		});
+		liveTest.addTestcase({
+			nameTest: 'test',
+			nameTab: 'test',
+			functionOutput: function () {
+				return 'true false trflafalse';
 			}
 		});
 		liveTest.addTestcase({
