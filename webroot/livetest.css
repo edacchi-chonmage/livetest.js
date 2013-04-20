@@ -66,15 +66,12 @@
 	vertical-align: top;
 }
 .jsc-lt-output table td {
-	padding: 0 5px !important;
+	padding: 0 5px 10px !important;
 }
-.jsc-lt-section {
-	margin-bottom: 1em !important;
-}
-.jsc-lt-title {
+.jsc-lt-op-name {
 	color: #FB9632;
 }
-#jsi-lt .jsc-lt-value {
+.jsc-lt-op-value {
 	padding-left: 20px;
 }
 .jsc-lt-value-true {

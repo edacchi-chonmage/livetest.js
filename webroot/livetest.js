@@ -1,7 +1,7 @@
 var LIVETEST = window.LIVETEST || {};
 
 LIVETEST.General = function () {
-	this.tests = {};
+	this.testcases = {};
 	this.tab = new LIVETEST.Tab();
 	this.$body = $('body');
 	this.$head = $('head');
@@ -13,7 +13,7 @@ LIVETEST.General = function () {
 		'			</tr>' +
 		'		</table>' +
 		'	</div>' +
-		'	<div id="jsi-lt-output-wrapper">' +
+		'	<div id="jsi-lt-outputs">' +
 		'	</div>' +
 		'	<div id="jsi-lt-footer">' +
 		'		<table id="jsi-lt-status">' +
@@ -37,18 +37,36 @@ LIVETEST.General.PATH = {
 LIVETEST.General.DURATION = {
 	FADEIN_INIT: 300
 };
+LIVETEST.General.BASE_ELEMENTS = {
+	$TEST_SECTION: $(
+		'<tr>' +
+		'	<th>●</th>' +
+		'	<td>' +
+		'		<div class="jsc-lt-op-name"></div>' +
+		'		<div class="jsc-lt-op-value"></div>' +
+		'	</td>' +
+		'</tr>'
+	)
+};
+LIVETEST.General.CLASS = {
+	OUTPUT: {
+		NAME: 'jsc-lt-op-name',
+		VALUE: 'jsc-lt-op-value',
+		TABLE: 'jsc-lt-op-table'
+	}
+};
 LIVETEST.General.INTERVAL = 50;
 LIVETEST.General.prototype = {
 	init: function () {
 		this.generatePanel();
 		this.tab.getElements();
-		this.readStyleSheetToFadeIn();
+		this.readStyleSheetToFadeInPanel();
 		this.startInterval();
 	},
 	generatePanel: function () {
 		this.$body.append(this.$panel);
 	},
-	readStyleSheetToFadeIn: function () {
+	readStyleSheetToFadeInPanel: function () {
 		this.$head.append('<link rel="stylesheet" href="' + LIVETEST.General.PATH.CSS + '" />');
 
 		// The timeout for read css delay.
@@ -61,48 +79,39 @@ LIVETEST.General.prototype = {
 			this.runTest();
 		}, this), LIVETEST.General.INTERVAL);
 	},
-	addTest: function (test) {
+	addTestcase: function (testcase) {
 		var
-			$panelInner = null,
-			nameTab = (test.tab) ? test.tab : LIVETEST.Tab.NAME.GENERAL,
-			$rowTable = $('<tr>'),
-			$thTable = $('<th>').text('●'),
-			$tdTable = $('<td>'),
-			$section = $('<div class="jsc-lt-section">'),
-			$nameTest = $('<div class="jsc-lt-title">'),
-			$valueTest = $('<div class="jsc-lt-value">');
+			$tableOutput = null,
+			nameTab = (testcase.nameTab) ? testcase.nameTab : LIVETEST.Tab.NAME.GENERAL,
+			$testsection = LIVETEST.General.BASE_ELEMENTS.$TEST_SECTION.clone(),
+			$nameTest = $testsection.find('.' + LIVETEST.General.CLASS.OUTPUT.NAME),
+			$valueTest = $testsection.find('.' + LIVETEST.General.CLASS.OUTPUT.VALUE),
+			testcaseTarget = this.testcases[testcase.nameTest];
 
-		if (!test.tab) {
-			test.tab = LIVETEST.Tab.NAME.GENERAL;
+		if (!testcase.nameTab) {
+			testcase.nameTab = LIVETEST.Tab.NAME.GENERAL;
 		}
 
-		if (!this.tests[test.name]) {
+		if (!this.testcases[testcase.nameTest]) {
 			if (typeof this.tab.indexTabs[nameTab] === 'undefined') {
+				// Nothing a tab.
 				this.tab.add(nameTab);
 			}
 
-			$panelInner = $('.jsc-lt-output-table');
-			$panelInner = $panelInner.eq(this.tab.indexTabs[nameTab]);
+			$tableOutput = this.$panel.find('.' + LIVETEST.General.CLASS.OUTPUT.TABLE);
+			$tableOutput = $tableOutput.eq(this.tab.indexTabs[nameTab]);
 
-			$nameTest.text(test.name);
-			$section.append($nameTest);
-			$section.append($valueTest);
-			$tdTable.append($section);
-			$rowTable
-				.append($thTable)
-				.append($tdTable);
-			$panelInner.append($rowTable);
+			$nameTest.text(testcase.nameTest);
+			$tableOutput.append($testsection);
 
-			this.tests[test.name] = {
-				'function': test.functionOutput,
-				$nameTest: $nameTest,
-				$valueTest: $valueTest
-			};
+			this.testcases[testcase.nameTest] = testcase;
+			this.testcases[testcase.nameTest].$nameTest = $nameTest;
+			this.testcases[testcase.nameTest].$valueTest = $valueTest;
 		}
 	},
 	runTest: function () {
-		for (var key in this.tests) {
-			this.tests[key].$valueTest.text(this.tests[key]['function']());
+		for (var nameTest in this.testcases) {
+			this.testcases[nameTest].$valueTest.text(this.testcases[nameTest].functionOutput());
 		}
 
 		this.changeColorBoolean();
@@ -115,6 +124,7 @@ LIVETEST.General.prototype = {
 };
 
 LIVETEST.Tab = function () {
+	this.currentIndex = 0;
 	this.indexTabs = {};
 	this.$linksInTab = null;
 	this.$base = null;
@@ -129,7 +139,7 @@ LIVETEST.Tab.CLASS = {
 LIVETEST.Tab.HTML = {
 	INNER:
 		'		<div class="jsc-lt-output">' +
-		'			<table class="jsc-lt-output-table">' +
+		'			<table class="jsc-lt-op-table">' +
 		'			</table>' +
 		'		</div>'
 };
@@ -145,10 +155,10 @@ LIVETEST.Tab.prototype = {
 				href: 'javascript: void(0);'
 			}),
 			$ltInner = $('<div>').addClass('jsc-lt-output'),
-			$ltInnerTable = $('<table>').addClass('jsc-lt-output-table');
+			$ltInnerTable = $('<table>').addClass('jsc-lt-op-table');
 
 		$ltInner.append($ltInnerTable);
-		$('#jsi-lt-output-wrapper').append($ltInner);
+		$('#jsi-lt-outputs').append($ltInner);
 
 		$linkAdd.text(nameTab);
 		$tabAdd.append($linkAdd);
@@ -180,37 +190,37 @@ if (typeof jQuery === 'function') {
 		liveTest = new LIVETEST.General();
 
 		// Default test
-		liveTest.addTest({
-			name: 'window: width',
+		liveTest.addTestcase({
+			nameTest: 'window: width',
 			functionOutput: function () {
 				return $(window).width() + ' px';
 			}
 		});
-		liveTest.addTest({
-			name: 'window: height',
+		liveTest.addTestcase({
+			nameTest: 'window: height',
 			functionOutput: function () {
 				return $(window).height() + ' px';
 			}
 		});
-		liveTest.addTest({
-			name: 'window: scrollTop',
+		liveTest.addTestcase({
+			nameTest: 'window: scrollTop',
 			functionOutput: function () {
 				return $(window).scrollTop() + ' px';
 			}
 		});
-		liveTest.addTest({
-			name: 'window: scrollLeft',
+		liveTest.addTestcase({
+			nameTest: 'window: scrollLeft',
 			functionOutput: function () {
 				return $(window).scrollLeft() + ' px';
 			}
 		});
-		// liveTest.addTest({
-		// 	name: 'test',
-		// 	tab: 'test',
-		// 	functionOutput: function () {
-		// 		return $(window).scrollLeft() + ' px';
-		// 	}
-		// });
+		liveTest.addTestcase({
+			nameTest: 'test',
+			nameTab: 'test',
+			functionOutput: function () {
+				return $(window).scrollLeft() + ' px';
+			}
+		});
 	});
 } else {
 	console.log('Please load jQuery');
