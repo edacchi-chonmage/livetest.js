@@ -42,11 +42,13 @@
 	background: #1B1D1E;
 	text-decoration: none;
 }
+#jsi-lt-outputs {
+	overflow: auto;
+}
 .jsc-lt-output {
 	display: none;
 	height: 200px;
 	margin-top: 1px !important;
-	overflow: auto;
 }
 .jsc-lt-output {
 	display: none;
@@ -138,6 +140,7 @@
 }
 .jsc-lt-footer-spec {
 	display: none;
+	height: 30px;
 }
 .jsc-lt-footer-spec.jsc-current {
 	display: block;

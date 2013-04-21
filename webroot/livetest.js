@@ -32,6 +32,9 @@ LIVETEST.General = function () {
 		'	</div>' +
 		'</div>'
 	);
+	this.$tab = this.$panel.find('#jsi-lt-tab');
+	this.$footer = this.$panel.find('#jsi-lt-footer');
+	this.$outputs = this.$panel.find('#jsi-lt-outputs');
 
 	this.init();
 };
@@ -81,6 +84,7 @@ LIVETEST.General.prototype = {
 		this.tab.getElements();
 		this.readStyleSheetToFadeInPanel();
 		this.startInterval();
+		this.calculateToSetOuptputHeight();
 	},
 	generatePanel: function () {
 		this.$body.append(this.$panel);
@@ -93,6 +97,22 @@ LIVETEST.General.prototype = {
 		setTimeout($.proxy(function () {
 			this.$panel.fadeIn(LIVETEST.General.DURATION.FADEIN_INIT);
 		}, this), 0);
+	},
+	calculateToSetOuptputHeight: function () {
+		var
+			heightOutputs = 0,
+			heightPanel = this.$panel.height(),
+			heightTab = this.$tab.height(),
+			heightFooter = this.$footer.height();
+
+		heightOutputs = heightPanel - heightTab - heightFooter;
+
+		this.$outputs.height(heightOutputs);
+
+		if (heightTab === 0) {
+			// For not read syltes.
+			setTimeout($.proxy(this.calculateToSetOuptputHeight, this), LIVETEST.General.INTERVAL);
+		}
 	},
 	startInterval: function () {
 		setInterval($.proxy(function () {
