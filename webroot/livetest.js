@@ -32,14 +32,12 @@ LIVETEST.General = function () {
 		'	</div>' +
 		'</div>'
 	);
+	this.$style = $('<style type="text/css">').html('#jsi-live-test{position:fixed;left:0;bottom:0;width:100%;height:300px;background:#1b1d1e;margin:0;padding:1px!important;color:#fff;font-family:Helvetica,Arial,Verdana,"ヒラギノ角ゴ ProN W3","Hiragino Kaku Gothic ProN","メイリオ",Meiryo,"ＭＳ Ｐゴシック","MS PGothic",sans-serif;font-size:12px;box-shadow:0 0 20px rgba(0,0,0,.3)}#jsi-live-test,#jsi-live-test div,#jsi-live-test p,#jsi-live-test td{margin:0;padding:0}#jsi-live-test a{text-decoration:none}#jsi-lt-tab{background:#f8f8f2;padding:0}#jsi-lt-tab table{border-collapse:collapse}#jsi-lt-tab td a{display:block;height:100%;padding:1px 10px;color:#fff;background:#a9a9a9;text-decoration:underline}#jsi-lt-tab td a.jsc-current{background:#1b1d1e;text-decoration:none}#jsi-lt-outputs{overflow:auto}.jsc-lt-output{display:none;height:200px;margin-top:1px!important}.jsc-lt-output{display:none}.jsc-lt-output.jsc-current{display:block}.jsc-lt-output table{border-collapse:collapse}.jsc-lt-output table th{width:25px;min-width:25px;background:#232526;color:#425558;text-align:center;vertical-align:top}.jsc-lt-output table td{padding:0 5px 10px!important}.jsc-lt-op-name{color:#fb9632}.jsc-lt-op-value{padding-left:20px!important}.jsc-lt-true{color:#8adc40!important}.jsc-lt-false{color:#f62c5e!important}#jsi-lt-status{width:100%;background:#303030;text-align:center;border-collapse:collapse;font-size:11px;font-weight:bold}#jsi-lt-status td{height:14px;vertical-align:middle}#jsi-lt-status-name{position:relative;min-width:60px;padding:0 7px!important;background:#fff;color:#0a5f5f}#jsi-lt-status-passing:before{content:"";position:absolute;top:2px;left:-5px;display:block;width:10px;height:10px;background:#fff;-webkit-transform:rotate(45deg)}#jsi-lt-status-passing{position:relative;min-width:140px;padding-left:5px!important;background:#1488ad}#jsi-lt-status-last:before{content:"";position:absolute;top:2px;left:-5px;display:block;width:10px;height:10px;background:#1488ad;-webkit-transform:rotate(45deg)}#jsi-lt-status-last{position:relative;width:100%}#jsi-lt-footer-specs{overflow:auto;padding:5px!important}.jsc-lt-footer-spec{display:none;height:30px}.jsc-lt-footer-spec.jsc-current{display:block}.jsc-lt-footer-spec a{display:inline-block;padding:0 5px;color:#425558}');
 	this.$tab = this.$panel.find('#jsi-lt-tab');
 	this.$footer = this.$panel.find('#jsi-lt-footer');
 	this.$outputs = this.$panel.find('#jsi-lt-outputs');
 
 	this.init();
-};
-LIVETEST.General.PATH = {
-	CSS: '/livetest.css'
 };
 LIVETEST.General.DURATION = {
 	FADEIN_INIT: 300
@@ -91,7 +89,7 @@ LIVETEST.General.prototype = {
 		this.$countPassingSpecs = $('#jsi-lt-status-count-spec');
 	},
 	readStyleSheetToFadeInPanel: function () {
-		this.$head.append('<link rel="stylesheet" href="' + LIVETEST.General.PATH.CSS + '" />');
+		this.$head.append(this.$style);
 
 		// The timeout for read css delay.
 		setTimeout($.proxy(function () {
@@ -356,6 +354,7 @@ if (typeof jQuery === 'function') {
 		});
 		liveTest.addTestcase({
 			nameTest: 'window: scrollLeft',
+			nameTab: 'hogehoge',
 			functionOutput: function () {
 				return $(window).scrollLeft() + ' px';
 			},

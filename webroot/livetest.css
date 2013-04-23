@@ -103,7 +103,7 @@
 	color: #0A5F5F;
 }
 #jsi-lt-status-passing:before {
-	content: '';
+	content: "";
 	position: absolute;
 	top: 2px;
 	left: -5px;
@@ -120,7 +120,7 @@
 	background: #1488AD;
 }
 #jsi-lt-status-last:before {
-	content: '';
+	content: "";
 	position: absolute;
 	top: 2px;
 	left: -5px;
