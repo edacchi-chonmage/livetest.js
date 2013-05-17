@@ -1,6 +1,6 @@
 var LIVETEST = window.LIVETEST || {
 	INTERVAL: {
-		WRAP: 10
+		WRAP: 100
 	}
 };
 
